@@ -154,7 +154,7 @@ class HeapSort(Unsorted):
 	def heap_sort(self):
 		n = len(self.unsort_arr)
 
-		for i in range(n//2, -1, -1):
+		for i in range(n // 2, -1, -1):
 			self.heapify(self.unsort_arr, n, i)
 
 		for i in range(n-1, 0, -1):
