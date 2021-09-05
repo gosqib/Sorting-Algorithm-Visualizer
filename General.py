@@ -24,16 +24,8 @@ GREEN: Colour   = (0, 255, 0)
 
 pygame.display.set_caption("does stuff")
 
-# bar should be on left side
-# should be buttons each with same font
-# multiplelines of diff font
 
-# Textbox takes in; text, position
-# returns to screen
-
-# MultipleLines takes in; list of strings, position of first string
-# Button takes in; msg, msgXcoo, msgYcoo, butX, butY, stanCol, hovCol, action
-
+# convenient way to add text
 class Text:
     def __init__(self, text: str, colour: Colour, pos: Position, font_size: int) -> None:
         font = pygame.font.SysFont("Times New Roman", font_size)
@@ -53,14 +45,15 @@ class MultipleLine:
             for iter, text in enumerate(texts)
         ]
 
-    # nbo return cause loop
     def display(self) -> None:
         for text in self._boxes:
             text.display()
 
+
+
 class Button:
     def __init__(self, msg: str, font_size: int) -> None:
-        self._msg = msg # shouold be msg instead
+        self._msg = msg
         self._font_size = font_size
 
     def text_object(self) -> Tuple[object, object]:
@@ -69,24 +62,25 @@ class Button:
         return text_surface, text_surface.get_rect()
 
     def button(self, msg_x: int, msg_y: int, but_wid: int, but_hei: int, rest_col: Colour, hov_col: Colour, action: Callable=None):
+        # tracks mouse info
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
-        # tracks mouse info
+        # checks if mouse (x, y) location overlaps with button location
         if msg_x + but_wid > mouse[0] > msg_x and msg_y + but_hei > mouse[1] > msg_y:
-            pygame.draw.rect(
-                DISPLAY, 
-                hov_col, 
-                (msg_x, msg_y, but_wid, but_hei) )
-
-            if click[0] == 1 and action != None:
+            # draw rect if overlaps
+            pygame.draw.rect(DISPLAY, hov_col, (msg_x, msg_y, but_wid, but_hei))
+            
+            if click[0] and action != None:
                 action()
+        
         else:
-            pygame.draw.rect(DISPLAY, rest_col, (msg_x, msg_y, but_wid, but_hei) )
-
-        #Textbox takes in msgX, msgY
-        # find location of text, button gets put behind text location
+            # also draw button if not overlap
+            pygame.draw.rect(DISPLAY, rest_col, (msg_x, msg_y, but_wid, but_hei))
+        
+        # create text
         textSurf, textRect = self.text_object()
+        # move text over to fit in button drawing
         textRect.center = msg_x + (but_wid / 2), msg_y + (but_hei / 2)
         DISPLAY.blit(textSurf, textRect)
 
